@@ -2,6 +2,7 @@ import pandas as pd
 from collections import deque
 from rsi_model import RSI
 from datetime import datetime
+from printing_data import PrintPrices
 
 SEQ_LEN = 60
 
@@ -23,11 +24,14 @@ def backtesting(close_value, close_time, budget):
     close_time = half_list(close_time)
     
     #rsi calculation
+    START_TIME = 100
     MINUTE = 5
-    priceQ = deque(pric_list[:100:MINUTE])
+    valueQ = deque(close_value[:START_TIME:MINUTE])
     rsi = RSI(4, 70, 30)
-    rsi.rsi()
+    rsi.rsi(valueQ)
     trade_count = 0
+
+    PrintPrices(budget, START_TIME, close_value, close_time)
 
     
 
@@ -35,7 +39,8 @@ def backtesting(close_value, close_time, budget):
 
 
     return 0
-    
+
+print(datetime.fromtimestamp(new_df_time[len(new_df_close)-1]))
 backtesting(new_df_close, new_df_time, 1000)
 
 #[print(datetime.fromtimestamp(i)) for i in new_df_time]
