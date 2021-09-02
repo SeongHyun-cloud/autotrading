@@ -3,6 +3,7 @@ from collections import deque
 from rsi_model import RSI
 from datetime import datetime
 from printing_data import PrintPrices
+from strategy import *
 
 SEQ_LEN = 60
 
@@ -17,6 +18,8 @@ new_df_time = new_df["time"].tolist()[1:]
 new_df_time.reverse()
 new_df_time = [int(i) for i in new_df_time]
 
+
+
 def backtesting(close_value, close_time, budget):
     def half_list(l):
         return l[int (len(l)/2):]
@@ -30,17 +33,32 @@ def backtesting(close_value, close_time, budget):
     rsi = RSI(4, 70, 30)
     rsi.rsi(valueQ)
     trade_count = 0
-
-    PrintPrices(budget, START_TIME, close_value, close_time)
-
+    #move list by the start time
+    close_time = close_time[START_TIME:]
+    close_value = close_value[START_TIME:]
+    track_history = PrintPrices(budget, close_value[0], close_time[0])
     
-
-
+    # looping 
+    #change
+    strat = RCstrategy(valueQ,rsi, budget)
+    for i in range(0, len(close_value)):
+        
+        price = close_value[i]
+        
+        traded = strat.trade(price)
+        #daily profit counter
+        
+        if traded:
+            track_history.trade_count += 1
+            track_history.update(strat)
+    
+    track_history.printCurrent(strat)
+        
 
 
     return 0
 
-print(datetime.fromtimestamp(new_df_time[len(new_df_close)-1]))
+
 backtesting(new_df_close, new_df_time, 1000)
 
 #[print(datetime.fromtimestamp(i)) for i in new_df_time]
