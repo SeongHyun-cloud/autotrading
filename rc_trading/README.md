@@ -23,10 +23,10 @@ Sell situation:
         if rsi is higher than 80, add sell_factor of 0.6
         if rsi is higher than 90, add sell_factor of 0.7
         if rsi is higher than 95, add sell_factor of 0.8
-        if margin is -1.0%, add buy_factor of 0.2
-        if margin is -2.5%, add buy_factor of 0.5
-        if margin is -4.0%, add buy_factor of 0.8
-        if margin is -5.0%, add buy_factor of 1
+        if margin is +1.0%, add sell_factor of 0.2
+        if margin is +2.5%, add sell_factor of 0.5
+        if margin is +4.0%, add sell_factor of 0.8
+        if margin is +5.0%, add sell_factor of 1
     
     Stratege 2:
         Sell the 20% of shares that I have

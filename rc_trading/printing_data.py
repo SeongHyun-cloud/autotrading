@@ -14,8 +14,10 @@ class PrintPrices:
     def update(self, strategy):
         print("Curent ")
 
-    def printCurrent(self, strat):
-        print("Current", strat.deposit)
+    def printCurrent(self, value, coin, deposit):
+        print("Current", value * coin + deposit)
+        
+        
 
 
     
