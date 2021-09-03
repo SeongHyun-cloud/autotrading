@@ -2,6 +2,8 @@ rsi + circulation auto trade backtesting program.
 
 This program is combine with rsi trading strategy and circulation scalping strategy. 
 
+https://public.bnbstatic.com/image/cms/article/body/202106/0123551429dae7094a5ffc278443f88c.png
+
 Buy situation:
     Buys at that price with 20% of money from the wallet if the "factor" reaches over 1. 
     if rsi is lower than 40, add buy_factor of 0.4
