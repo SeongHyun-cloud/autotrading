@@ -15,49 +15,66 @@ class RCstrategy:
         factor = 0
         self.priceQ.append(value)
         status, factor = self.rsi.rsi(self.priceQ)
+        sell_factor = factor
+        buy_factor = factor
         self.priceQ.popleft()
-        if self.coin == 0 and status == "OVERBOUGHT" and factor >= 0.6 :
-            
-            self.purchaseAmount = self.deposit / 5
+
+        percent_of_deposit = 4
+
+        if self.coin == 0 and status == "OVERSOLD" and factor >= 0.6 :
+            print("none Happens")
+            self.purchaseAmount = self.deposit / percent_of_deposit
             self.coin = self.purchaseAmount / value
-            self.deposit = self.deposit * (0.8)
+            self.deposit = self.deposit - self.purchaseAmount
             self.lastPrice = value
+            return True
     
         #factor calculation Buying condition due to drammatic price drop
         if(self.lastPrice != -1) :
             profit_or_loss = value / self.lastPrice
+            profit_or_loss = abs(profit_or_loss)
             if profit_or_loss >= 1.05:
-                factor += 1
+                sell_factor += 1
             elif profit_or_loss > 1.04:
-                factor += 0.8
+                sell_factor += 0.8
             elif profit_or_loss > 1.025:
-                factor += 0.5
+                sell_factor += 0.5
             elif profit_or_loss > 1.01:
-                factor += 0.2
+                sell_factor += 0.2
+            elif profit_or_loss > 0.99:
+                buy_factor += 0.2
+            elif profit_or_loss > 0.975:
+                buy_factor += 0.5
+            elif profit_or_loss > 0.96:
+                buy_factor += 0.8
+            elif profit_or_loss > 0.95:
+                buy_factor += 1
             
         
+        if (status =="OVERSOLD" or status == "OVERBOUGHT") and factor>=0.6:
+            b = 1232
 
-
-        if status == "OVERBOUGHT" and factor >= 1 and self.deposit > 0:
+        if status == "OVERSOLD" and self.deposit > 0 and buy_factor >= 1:
             if self.purchaseAmount >= self.deposit:
+                print("buy Happens1")
                 #making average price
                 acoin = self.deposit / value
-                self.lastPrice = ((self.lastPrice * self.coin) / (value * acoin)) /(self.coin + acoin)
-                self.coin = self.deposit * value
+                self.lastPrice = ((self.lastPrice * self.coin) + (value * acoin)) /(self.coin + acoin)
+                self.coin += acoin
                 self.deposit = 0
-                self.purchaseAmount = value
                 return True
             else:
-                acoin = self.deposit / value
-                self.lastPrice = ((self.lastPrice * self.coin) / (value * acoin)) /(self.coin + acoin)
-                self.coin = self.purchaseAmount * value
+                print("buy Happens2")
+                acoin = self.purchaseAmount / value
+                self.lastPrice = ((self.lastPrice * self.coin) + (value * acoin)) /(self.coin + acoin)
+                self.coin += acoin
                 self.deposit -= self.purchaseAmount
-                self.purchaseAmount = value
                 return True
 
 
-        if status == "OVRESOLD" and factor >= 1 and coin > 0:
-            self.deposit = self.coin * value
+        if status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1:
+            print("soldhappens")
+            self.deposit += self.coin * value
             self.lastPrice = -1
             self.purchaseAmount = 0
             self.coin = 0

@@ -11,11 +11,13 @@ class PrintPrices:
         self.close_time = close_time
         print("Start at", datetime.fromtimestamp(close_time), "with the price of",close_value)
 
-    def update(self, strategy):
-        print("Curent ")
+    def result(self, strat):
+        print("At the end,", strat.coin * strat.lastPrice + strat.deposit)
 
-    def printCurrent(self, value, coin, deposit):
-        print("Current", value * coin + deposit)
+    def printCurrent(self, value, coin, deposit, time):
+        
+        print(datetime.fromtimestamp(time) , coin , deposit)
+        
         
         
 

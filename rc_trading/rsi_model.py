@@ -32,25 +32,26 @@ class RSI:
             self.last_rsi = rsi[-1]
             
             if self.last_rsi > self.RSI_95:
-                return "OVERSOLD", 0.8
+                return "OVERBOUGHT", 0.8
             elif self.last_rsi > self.RSI_90:
-                return "OVERSOLD", 0.7
+                return "OVERBOUGHT", 0.7
             elif self.last_rsi > self.RSI_80:
-                return "OVERSOLD", 0.6
+                return "OVERBOUGHT", 0.6
             elif self.last_rsi > self.RSI_70:
-                return "OVERSOLD", 0.5
+                return "OVERBOUGHT", 0.5
             elif self.last_rsi > self.RSI_60:
-                return "OVERSOLD", 0.4
+                return "OVERBOUGHT", 0.4
             elif self.last_rsi > self.RSI_40:
                 return "NONE", 0.0
             elif self.last_rsi > self.RSI_30:
-                return "OVERBOUGHT", 0.4
+                return "OVERSOLD", 0.4
             elif self.last_rsi > self.RSI_20:
-                return "OVERBOUGHT", 0.5
+                return "OVERSOLD", 0.5
             elif self.last_rsi > self.RSI_10:
-                return "OVERBOUGHT", 0.6
+                return "OVERSOLD", 0.6
             elif self.last_rsi > self.RSI_5:
-                return "OVERBOUGHT", 0.7
-            else:
-                return "OVERBOUGHT", 0.8
+                return "OVERSOLD", 0.7
+            elif self.last_rsi >= 0:
+                return "OVERSOLD", 0.8
+
 
