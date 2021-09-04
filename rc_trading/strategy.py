@@ -20,7 +20,7 @@ class RCstrategy:
         self.priceQ.popleft()
 
         percent_of_deposit = 4
-        leverage = 10
+        leverage = 3
         fee = 0.02
 
         if self.coin == 0 and status == "OVERSOLD" and factor >= 0.6 :
@@ -83,7 +83,10 @@ class RCstrategy:
             return True
 
         def liquidation_calculator(leverage, entering_price, coinamount, deposit):
-            
+            profit = self.coin * value - self.lastPrice * self.coin
+            profit *= leverage
+            total = self.deposit + self.coin*value - profit
+
         if self.deposit < 0 :
             print("PAUSE-------------------")
         return False
