@@ -36,11 +36,11 @@ class RSI:
             elif self.last_rsi > self.RSI_90:
                 return "OVERBOUGHT", 0.7
             elif self.last_rsi > self.RSI_80:
-                return "OVERBOUGHT", 0.6
-            elif self.last_rsi > self.RSI_70:
                 return "OVERBOUGHT", 0.5
-            elif self.last_rsi > self.RSI_60:
+            elif self.last_rsi > self.RSI_70:
                 return "OVERBOUGHT", 0.4
+            elif self.last_rsi > self.RSI_60:
+                return "OVERBOUGHT", 0.3
             elif self.last_rsi > self.RSI_40:
                 return "NONE", 0.0
             elif self.last_rsi > self.RSI_30:

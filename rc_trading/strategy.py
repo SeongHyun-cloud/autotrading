@@ -20,6 +20,8 @@ class RCstrategy:
         self.priceQ.popleft()
 
         percent_of_deposit = 4
+        leverage = 10
+        fee = 0.02
 
         if self.coin == 0 and status == "OVERSOLD" and factor >= 0.6 :
             print("none Happens")
@@ -41,18 +43,16 @@ class RCstrategy:
                 sell_factor += 0.5
             elif profit_or_loss > 1.01:
                 sell_factor += 0.2
-            elif profit_or_loss > 0.99:
+            elif profit_or_loss > 0.98:
                 buy_factor += 0.2
-            elif profit_or_loss > 0.975:
-                buy_factor += 0.5
-            elif profit_or_loss > 0.96:
-                buy_factor += 0.8
-            elif profit_or_loss > 0.95:
+            elif profit_or_loss > 0.94:
+                buy_factor += 0.6
+            elif profit_or_loss > 0.91:
+                buy_factor += 0.7
+            elif profit_or_loss > 0.89:
                 buy_factor += 1
             
         
-        if (status =="OVERSOLD" or status == "OVERBOUGHT") and factor>=0.6:
-            b = 1232
 
         if status == "OVERSOLD" and self.deposit > 0 and buy_factor >= 1:
             if self.purchaseAmount >= self.deposit:
@@ -74,13 +74,18 @@ class RCstrategy:
 
         if status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1:
             print("soldhappens")
-            self.deposit += self.coin * value
+            profit = self.coin * value - self.lastPrice * self.coin
+            profit *= leverage
+            self.deposit += self.coin * self.lastPrice + profit
             self.lastPrice = -1
             self.purchaseAmount = 0
             self.coin = 0
             return True
 
-
+        def liquidation_calculator(leverage, entering_price, coinamount, deposit):
+            
+        if self.deposit < 0 :
+            print("PAUSE-------------------")
         return False
         
         

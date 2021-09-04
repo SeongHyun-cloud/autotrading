@@ -13,6 +13,7 @@ class PrintPrices:
 
     def result(self, strat):
         print("At the end,", strat.coin * strat.lastPrice + strat.deposit)
+        print("trade_count", self.trade_count)
 
     def printCurrent(self, value, coin, deposit, time):
         

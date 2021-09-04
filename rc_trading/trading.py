@@ -30,7 +30,7 @@ def backtesting(close_value, close_time, budget):
     START_TIME = 100
     MINUTE = 5
     valueQ = deque(close_value[:START_TIME:MINUTE])
-    rsi = RSI(6, 70, 30)
+    rsi = RSI(14, 70, 30)
     rsi.rsi(valueQ)
     trade_count = 0
     #move list by the start time
@@ -41,6 +41,7 @@ def backtesting(close_value, close_time, budget):
     # looping 
     #change
     strat = RCstrategy(valueQ,rsi, budget)
+    
     for i in range(0, len(close_value)):
         
         price = close_value[i]
@@ -53,8 +54,8 @@ def backtesting(close_value, close_time, budget):
             track_history.printCurrent(strat.lastPrice, strat.coin, strat.deposit, close_time[i])
     
     track_history.result(strat)
-
-
+    print(close_value[0])
+    print(close_value[len(close_value)-1])
     return 0
 
 
