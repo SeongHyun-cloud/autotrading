@@ -16,7 +16,7 @@ class PrintPrices:
         print("trade_count", self.trade_count)
 
     def printCurrent(self, value, coin, deposit, time):
-        
+        a = 3
         print(datetime.fromtimestamp(time) , coin , deposit)
         
         

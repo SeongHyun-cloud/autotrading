@@ -7,7 +7,7 @@ from strategy import *
 
 SEQ_LEN = 60
 
-new_df = pd.read_csv("crypto_data/Bitstamp_BTCUSD_minute.csv", names = ['time', 'date', 'symbol','open', 'high', 'low', 'close', 'volume_usd',  'volume_btc'])
+new_df = pd.read_csv("crypto_data/Binance_BTCUSDT_minute.csv", names = ['time', 'date', 'symbol','open', 'high', 'low', 'close', 'volume_usd',  'volume_btc', 'dummy'], error_bad_lines=False, index_col=False, dtype='unicode')
 coin_type = "BTC"
 new_df = new_df[1:]
 new_df = new_df[["close", "time"]]
@@ -16,13 +16,13 @@ new_df_close.reverse()
 new_df_close = [float(i) for i in new_df_close]
 new_df_time = new_df["time"].tolist()[1:]
 new_df_time.reverse()
-new_df_time = [int(i) for i in new_df_time]
+new_df_time = [int(i)/1000 for i in new_df_time]
 
-
+def half_list(l):
+    return l[int (len(l)/2):]
 
 def backtesting(close_value, close_time, budget):
-    def half_list(l):
-        return l[int (len(l)/2):]
+
     close_value = half_list(close_value)
     close_time = half_list(close_time)
     
@@ -54,10 +54,11 @@ def backtesting(close_value, close_time, budget):
             track_history.printCurrent(strat.lastPrice, strat.coin, strat.deposit, close_time[i])
     
     track_history.result(strat)
+    print(datetime.fromtimestamp(close_time[0]))
+    print(datetime.fromtimestamp(close_time[-1]))
     print(close_value[0])
     print(close_value[len(close_value)-1])
     return 0
-
 
 backtesting(new_df_close, new_df_time, 1000)
 

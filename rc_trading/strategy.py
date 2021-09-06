@@ -19,12 +19,12 @@ class RCstrategy:
         buy_factor = factor
         self.priceQ.popleft()
 
-        percent_of_deposit = 4
-        leverage = 10
-        fee_percent = 0.0002 * leverage
+        percent_of_deposit = 5
+        leverage = 5
+        fee_percent = 0.0004 * leverage
 
         if self.coin == 0 and status == "OVERSOLD" and factor >= 0.6 :
-            print("none Happens")
+            #print("none Happens")
             self.purchaseAmount = self.deposit / percent_of_deposit
             self.coin = self.purchaseAmount / value
             fee = self.coin * value * fee_percent
@@ -57,7 +57,7 @@ class RCstrategy:
 
         if status == "OVERSOLD" and self.deposit > 0 and buy_factor >= 1:
             if self.purchaseAmount >= self.deposit:
-                print("buy Happens1")
+                #print("buy Happens1")
                 #making average price
                 acoin = self.deposit / value
                 self.lastPrice = ((self.lastPrice * self.coin) + (value * acoin)) /(self.coin + acoin)
@@ -67,7 +67,7 @@ class RCstrategy:
                 self.deposit = 0
                 return True
             else:
-                print("buy Happens2")
+                #print("buy Happens2")
                 acoin = self.purchaseAmount / value
                 self.lastPrice = ((self.lastPrice * self.coin) + (value * acoin)) /(self.coin + acoin)
                 self.coin += acoin
@@ -77,7 +77,7 @@ class RCstrategy:
 
 
         if status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1:
-            print("soldhappens")
+            #print("soldhappens")
             profit = self.coin * value - self.lastPrice * self.coin
             profit *= leverage
             fee = self.coin * value * fee_percent
