@@ -20,14 +20,15 @@ class RCstrategy:
         self.priceQ.popleft()
 
         percent_of_deposit = 4
-        leverage = 3
-        fee = 0.02
+        leverage = 10
+        fee_percent = 0.0002 * leverage
 
         if self.coin == 0 and status == "OVERSOLD" and factor >= 0.6 :
             print("none Happens")
             self.purchaseAmount = self.deposit / percent_of_deposit
             self.coin = self.purchaseAmount / value
-            self.deposit = self.deposit - self.purchaseAmount
+            fee = self.coin * value * fee_percent
+            self.deposit = self.deposit - self.purchaseAmount - fee
             self.lastPrice = value
             return True
     
@@ -61,6 +62,8 @@ class RCstrategy:
                 acoin = self.deposit / value
                 self.lastPrice = ((self.lastPrice * self.coin) + (value * acoin)) /(self.coin + acoin)
                 self.coin += acoin
+                fee = self.coin * value * fee_percent
+                self.coin -= fee/value
                 self.deposit = 0
                 return True
             else:
@@ -68,7 +71,8 @@ class RCstrategy:
                 acoin = self.purchaseAmount / value
                 self.lastPrice = ((self.lastPrice * self.coin) + (value * acoin)) /(self.coin + acoin)
                 self.coin += acoin
-                self.deposit -= self.purchaseAmount
+                fee = self.coin * value * fee_percent
+                self.deposit -= self.purchaseAmount - fee
                 return True
 
 
@@ -76,19 +80,21 @@ class RCstrategy:
             print("soldhappens")
             profit = self.coin * value - self.lastPrice * self.coin
             profit *= leverage
-            self.deposit += self.coin * self.lastPrice + profit
+            fee = self.coin * value * fee_percent
+            self.deposit += self.coin * self.lastPrice + profit - fee
             self.lastPrice = -1
             self.purchaseAmount = 0
             self.coin = 0
             return True
 
-        def liquidation_calculator(leverage, entering_price, coinamount, deposit):
+        def liquidation_calculator():
             profit = self.coin * value - self.lastPrice * self.coin
             profit *= leverage
             total = self.deposit + self.coin*value - profit
+            return total
 
-        if self.deposit < 0 :
-            print("PAUSE-------------------")
+        if liquidation_calculator() < 0 :
+            input("LIQUIDAITON OCCURED")
         return False
         
         
