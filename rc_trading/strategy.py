@@ -7,6 +7,7 @@ class RCstrategy:
         self.rsi = rsi
         self.lastPrice = -1
         self.purchaseAmount = 0
+        self.data = {}
     ##
     # def myStrategy
     #   taking current price of coin buys if it is reasonable
@@ -21,7 +22,7 @@ class RCstrategy:
 
         percent_of_deposit = 5
         leverage = 5
-        fee_percent = 0.0004 * leverage
+        fee_percent = 0.0002 * leverage
 
         if self.coin == 0 and status == "OVERSOLD" and factor >= 0.6 :
             #print("none Happens")
@@ -31,7 +32,7 @@ class RCstrategy:
             self.deposit = self.deposit - self.purchaseAmount - fee
             self.lastPrice = value
             return True
-    
+
         #factor calculation Buying condition due to drammatic price drop
         if(self.lastPrice != -1) :
             profit_or_loss = value / self.lastPrice
@@ -47,9 +48,9 @@ class RCstrategy:
             elif profit_or_loss > 0.98:
                 buy_factor += 0.2
             elif profit_or_loss > 0.94:
-                buy_factor += 0.6
+                buy_factor += 0.5
             elif profit_or_loss > 0.91:
-                buy_factor += 0.7
+                buy_factor += 0.8
             elif profit_or_loss > 0.89:
                 buy_factor += 1
             
