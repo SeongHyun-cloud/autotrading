@@ -12,7 +12,7 @@ class PrintPrices:
         print("Start at", datetime.fromtimestamp(close_time), "with the price of",close_value)
 
     def result(self, strat):
-        print("At the end,", strat.coin * strat.lastPrice + strat.deposit)
+        print("At the end,", (int((strat.coin * strat.lastPrice + strat.deposit) * 100)) / 100 ,"$")
         print("trade_count", self.trade_count)
 
     def printCurrent(self, value, coin, deposit, time):

@@ -60,6 +60,5 @@ def backtesting(close_value, close_time, budget):
     print(close_value[len(close_value)-1])
     return 0
 
-backtesting(new_df_close, new_df_time, 1000)
 
-#[print(datetime.fromtimestamp(i)) for i in new_df_time]
+backtesting(new_df_close, new_df_time, 1000)
