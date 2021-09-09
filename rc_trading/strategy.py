@@ -21,8 +21,10 @@ class RCstrategy:
         self.priceQ.popleft()
 
         percent_of_deposit = 5
-        leverage = 5
+        leverage = 10
         fee_percent = 0.0002 * leverage
+
+        
 
         if self.coin == 0 and status == "OVERSOLD" and factor >= 0.6 :
             #print("none Happens")
@@ -37,7 +39,7 @@ class RCstrategy:
         if(self.lastPrice != -1) :
             profit_or_loss = value / self.lastPrice
             profit_or_loss = abs(profit_or_loss)
-            if profit_or_loss >= 1.05:
+            if profit_or_loss >= 1.1:
                 sell_factor += 1
             elif profit_or_loss > 1.04:
                 sell_factor += 0.8
@@ -76,8 +78,7 @@ class RCstrategy:
                 self.deposit -= self.purchaseAmount - fee
                 return True
 
-
-        if status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1:
+        if status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1.0:
             #print("soldhappens")
             profit = self.coin * value - self.lastPrice * self.coin
             profit *= leverage
@@ -87,12 +88,23 @@ class RCstrategy:
             self.purchaseAmount = 0
             self.coin = 0
             return True
+        elif status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1:
+            #input("halfselling!" + str(self.coin) + " | " +str(self.deposit))
+            profit = self.coin/2 *value - self.lastPrice * self.coin/2
+            profit *= leverage
+            fee = self.coin/2*value*fee_percent
+            self.deposit += self.coin/2 * self.lastPrice + profit - fee
+            self.coin /=2
+            #input("halfselling!" + str(self.coin)+ " | " +str(self.deposit))
+            return True
+        
 
         def liquidation_calculator():
             profit = self.coin * value - self.lastPrice * self.coin
             profit *= leverage
             total = self.deposit + self.coin*value - profit
             return total
+
 
         if liquidation_calculator() < 0 :
             input("LIQUIDAITON OCCURED")

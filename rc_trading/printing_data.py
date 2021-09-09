@@ -17,7 +17,7 @@ class PrintPrices:
 
     def printCurrent(self, value, coin, deposit, time):
         a = 3
-        print(datetime.fromtimestamp(time) , coin , deposit)
+        print(datetime.fromtimestamp(time),":" , coin ,"|", deposit,"||", value)
         
         
         
