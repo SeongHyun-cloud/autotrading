@@ -1,6 +1,6 @@
 class RCstrategy:
     
-    def __init__(self, priceQ, rsi, deposit):
+    def __init__(self, priceQ, rsi, deposit, strategy):
         self.priceQ = priceQ
         self.coin = 0
         self.deposit = deposit
@@ -8,6 +8,7 @@ class RCstrategy:
         self.lastPrice = -1
         self.purchaseAmount = 0
         self.data = {}
+        self.strategy_num = strategy
     ##
     # def myStrategy
     #   taking current price of coin buys if it is reasonable
@@ -20,12 +21,10 @@ class RCstrategy:
         buy_factor = factor
         self.priceQ.popleft()
 
-        percent_of_deposit = 5
-        leverage = 1
+        percent_of_deposit = 4
+        leverage = 2
         fee_percent = 0.0002 * leverage
 
-        if round(self.coin,1) == 0 and round(self.deposit,1) == 0:
-            input("ranout")
 
         if self.coin == 0 and status == "OVERSOLD" and factor >= 0.6 :
             #print("none Happens")
@@ -79,29 +78,44 @@ class RCstrategy:
                 self.deposit -= self.purchaseAmount - fee
                 return True
 
-        if status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1.4:
-            #print("soldhappens")
-            profit = self.coin * value - self.lastPrice * self.coin
-            profit *= leverage
-            fee = self.coin * value * fee_percent
-            self.deposit += self.coin * self.lastPrice + profit - fee
-            self.lastPrice = -1
-            self.purchaseAmount = 0
-            self.coin = 0
-            #input("pause")
-            return True
-        elif status == "OVERBOUGHT" and self.coin > 0.0001 and sell_factor >= 1:
-            
-            print("soldhappens")
-            sell_part = 2/3
-            profit = (self.coin *value - self.lastPrice * self.coin) / sell_part
-            profit *= leverage
-            fee = self.coin/sell_part * value * fee_percent
-            self.deposit += self.coin/sell_part * self.lastPrice + profit - fee
-            self.coin = self.coin * (1 -sell_part)
-            self.purchaseAmount = self.deposit / percent_of_deposit
-            return True
-        
+
+        if self.strategy_num == 1:
+            if status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1.4:
+                
+                profit = self.coin * value - self.lastPrice * self.coin
+                profit *= leverage
+                fee = self.coin * value * fee_percent
+                self.deposit += self.coin * self.lastPrice + profit - fee
+                self.lastPrice = -1
+                self.purchaseAmount = 0
+                self.coin = 0
+                return True
+        elif self.strategy_num == 2:
+            if status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1.4:
+                
+                profit = self.coin * value - self.lastPrice * self.coin
+                profit *= leverage
+                fee = self.coin * value * fee_percent
+                self.deposit += self.coin * self.lastPrice + profit - fee
+                self.lastPrice = -1
+                self.purchaseAmount = 0
+                self.coin = 0
+                return True
+            elif status == "OVERBOUGHT" and self.coin > 0.0001 and sell_factor >= 1:
+                
+                sell_part = 2/3
+                profit = (self.coin *value - self.lastPrice * self.coin) * sell_part
+                profit *= leverage
+                fee = self.coin*sell_part * value * fee_percent
+                self.deposit += self.coin*sell_part * self.lastPrice + profit - fee
+                self.coin = self.coin * (1 -sell_part)
+                self.purchaseAmount = self.deposit / percent_of_deposit
+                return True
+        '''
+        1/2 - 2657.62$
+        2/3 - 2567.76
+        3/4
+        '''
 
         def liquidation_calculator():
             profit = self.coin * value - self.lastPrice * self.coin

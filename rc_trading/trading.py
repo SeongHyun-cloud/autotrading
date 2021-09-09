@@ -43,7 +43,7 @@ def backtesting(close_value, close_time, budget):
     
     # looping 
     #change
-    strat = RCstrategy(valueQ,rsi, budget)
+    strat = RCstrategy(valueQ,rsi, budget, 1)
     
     for i in range(0, len(close_value)):
         
@@ -56,7 +56,7 @@ def backtesting(close_value, close_time, budget):
             track_history.trade_count += 1
             track_history.printCurrent(price, strat.coin, strat.deposit, close_time[i], strat.lastPrice)
 
-        #if track_history.trade_count == 100:
+        #if track_history.trade_count == 10:
         #    input("pause")
 
     track_history.result(strat)
