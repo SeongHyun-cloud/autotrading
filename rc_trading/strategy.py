@@ -21,10 +21,11 @@ class RCstrategy:
         self.priceQ.popleft()
 
         percent_of_deposit = 5
-        leverage = 10
+        leverage = 1
         fee_percent = 0.0002 * leverage
 
-        
+        if round(self.coin,1) == 0 and round(self.deposit,1) == 0:
+            input("ranout")
 
         if self.coin == 0 and status == "OVERSOLD" and factor >= 0.6 :
             #print("none Happens")
@@ -78,7 +79,7 @@ class RCstrategy:
                 self.deposit -= self.purchaseAmount - fee
                 return True
 
-        if status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1.0:
+        if status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1.4:
             #print("soldhappens")
             profit = self.coin * value - self.lastPrice * self.coin
             profit *= leverage
@@ -87,15 +88,18 @@ class RCstrategy:
             self.lastPrice = -1
             self.purchaseAmount = 0
             self.coin = 0
+            #input("pause")
             return True
-        elif status == "OVERBOUGHT" and self.coin > 0 and sell_factor >= 1:
-            #input("halfselling!" + str(self.coin) + " | " +str(self.deposit))
-            profit = self.coin/2 *value - self.lastPrice * self.coin/2
+        elif status == "OVERBOUGHT" and self.coin > 0.0001 and sell_factor >= 1:
+            
+            print("soldhappens")
+            sell_part = 2/3
+            profit = (self.coin *value - self.lastPrice * self.coin) / sell_part
             profit *= leverage
-            fee = self.coin/2*value*fee_percent
-            self.deposit += self.coin/2 * self.lastPrice + profit - fee
-            self.coin /=2
-            #input("halfselling!" + str(self.coin)+ " | " +str(self.deposit))
+            fee = self.coin/sell_part * value * fee_percent
+            self.deposit += self.coin/sell_part * self.lastPrice + profit - fee
+            self.coin = self.coin * (1 -sell_part)
+            self.purchaseAmount = self.deposit / percent_of_deposit
             return True
         
 

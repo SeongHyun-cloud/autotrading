@@ -15,12 +15,13 @@ class PrintPrices:
         print("At the end,", (int((strat.coin * strat.lastPrice + strat.deposit) * 100)) / 100 ,"$")
         print("trade_count", self.trade_count)
 
-    def printCurrent(self, value, coin, deposit, time):
+    def printCurrent(self, value, coin, deposit, time, lastPrice):
         a = 3
-        print(datetime.fromtimestamp(time),":" , coin ,"|", deposit,"||", value)
+        print(datetime.fromtimestamp(time),":" , round(coin,5) ,"|", round(deposit, 2),"||", value, "|||", lastPrice,"||||", self.trade_count)
         
         
         
+
 
 
     

@@ -54,8 +54,11 @@ def backtesting(close_value, close_time, budget):
         
         if traded:
             track_history.trade_count += 1
-            track_history.printCurrent(price, strat.coin, strat.deposit, close_time[i])
-    
+            track_history.printCurrent(price, strat.coin, strat.deposit, close_time[i], strat.lastPrice)
+
+        #if track_history.trade_count == 100:
+        #    input("pause")
+
     track_history.result(strat)
     print(datetime.fromtimestamp(close_time[0]))
     print(datetime.fromtimestamp(close_time[-1]))
