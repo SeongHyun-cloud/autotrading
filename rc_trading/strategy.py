@@ -123,11 +123,6 @@ class RCstrategy:
                 self.coin = self.coin * (1 -sell_part)
                 self.purchaseAmount = self.deposit / percent_of_deposit
                 return True
-        '''
-        1/2 - 2657.62$
-        2/3 - 2567.76
-        3/4
-        '''
 
         def liquidation_calculator():
             profit = self.coin * value - self.lastPrice * self.coin
