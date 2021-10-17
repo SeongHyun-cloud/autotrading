@@ -1,6 +1,6 @@
 rsi + circulation auto trade backtesting program. <br/>
 
-This program is combine with rsi trading strategy and circulation scalping strategy. 
+This program is combined with rsi trading strategy and circulation scalping strategy. 
 
 https://public.bnbstatic.com/image/cms/article/body/202106/0123551429dae7094a5ffc278443f88c.png
 
