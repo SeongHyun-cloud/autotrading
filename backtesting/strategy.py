@@ -1,6 +1,7 @@
 
 from collections import deque
 from rsi_model import RSI
+
 class RCstrategy:
     
     def __init__(self, priceQ, deposit, strategy):
@@ -24,8 +25,8 @@ class RCstrategy:
     def trade(self, value):
         self.time += 1
         factor = 0
-        myrsi = RSI(14,70,30)
-
+        myrsi = RSI(6,70,30)
+        
         self.priceQ.append(value)
         status, factor = myrsi.rsi(self.priceQ)
         sell_factor = factor
@@ -33,13 +34,13 @@ class RCstrategy:
         self.priceQ.popleft()
         
 
-        percent_of_deposit = 6
+        percent_of_deposit = 12
         leverage = 2
         fee_percent = 0.0002 * leverage
 
 
         if self.coin == 0 and status == "OVERSOLD" and factor >= 0.7 :
-            #print("none Happens")
+
             self.purchaseAmount = self.deposit / percent_of_deposit
             self.coin = self.purchaseAmount / value
             fee = self.coin * value * fee_percent
@@ -70,16 +71,17 @@ class RCstrategy:
                 elif profit_or_loss > 1.015:
                     sell_factor += 0.2
             else:
-                if profit_or_loss_buy > 0.96:
+                if 0.98 >profit_or_loss_buy > 0.96:
                     buy_factor += 0.2
-                elif profit_or_loss_buy > 0.92:
+                elif 0.96 >= profit_or_loss_buy > 0.92:
                     buy_factor += 0.5
-                elif profit_or_loss_buy > 0.90:
+                elif 0.92 >= profit_or_loss_buy > 0.90:
                     buy_factor += 0.8
-                elif profit_or_loss_buy > 0.87:
-                    #print("just buy")
+                elif 0.90 >= profit_or_loss_buy > 0.87:
                     buy_factor += 1
             
+
+        #Buy function
         if status == "OVERSOLD" and self.deposit > 0 and buy_factor >= 1:
             if self.purchaseAmount >= self.deposit:
                 #making average price
@@ -95,7 +97,6 @@ class RCstrategy:
 
                 return True
             else:
-                #print("buy Happens2")
                 acoin = self.purchaseAmount / value
                 self.lastPrice = ((self.lastPrice * self.coin) + (value * acoin)) /(self.coin + acoin)
                 self.coin += acoin
@@ -118,6 +119,8 @@ class RCstrategy:
                 
                 profit = self.coin * value - self.lastPrice * self.coin
                 profit *= leverage
+
+                
                 fee = self.coin * value * fee_percent
                 self.deposit += self.coin * self.lastPrice + profit - fee
                 self.lastPrice = -1
@@ -160,19 +163,27 @@ class RCstrategy:
 
                 return True
 
+        
+        #liquidaiton predictor
         def liquidation_calculator():
             profit = self.coin * value - self.lastPrice * self.coin
             profit *= leverage
             total = self.deposit + self.coin * self.lastPrice + profit
             return total
-
-
+        
         if liquidation_calculator() < 0.1 :
+            print("value", "deposit", "coin", "last Price")
             print(value, self.deposit, self.coin, self.lastPrice)
             print(self.deposit + self.coin* self.lastPrice )
-            print(self.coin * value - self.lastPrice * self.coin)
+            print(self.deposit + self.coin * value )
             
             input("LIQUIDAITON OCCURED")
+            
+
+        if self.lastPrice != 0 and self.lastPrice != -1 and self.lastPrice / value <  0.7:
+            input("LIQUIDAITON WARNING")
+        
+        
         return False
         
         
