@@ -34,7 +34,7 @@ class RCstrategy:
         self.priceQ.popleft()
         
 
-        percent_of_deposit = 12
+        percent_of_deposit = 5
         leverage = 2
         fee_percent = 0.0002 * leverage
 
@@ -71,7 +71,7 @@ class RCstrategy:
                 elif profit_or_loss > 1.015:
                     sell_factor += 0.2
             else:
-                if 0.98 >profit_or_loss_buy > 0.96:
+                if 0.999 >profit_or_loss_buy > 0.96:
                     buy_factor += 0.2
                 elif 0.96 >= profit_or_loss_buy > 0.92:
                     buy_factor += 0.5
