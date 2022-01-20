@@ -1,0 +1,21 @@
+Log in to binance first
+
+trade in trading.py
+
+get first 20 previous data point of the "symbol"
+
+
+buy strategy 1 
+    - rsi 6 70 30
+    - 5 divisible
+    - leverage = 2
+    1000 -> 32000
+
+
+call strategy for every 1 sec. 
+    - store data point that is 1 min mark (for rsi)
+    - if first element of the new data array is different than the 
+        previous array, means the interval has changed.
+        - in this case change to switch the new array with the old one.
+            desired deque is ex. [dp, dp, dp, dp, dp, 1sec data point]
+    -Bot does not buy more than once within the one inverval

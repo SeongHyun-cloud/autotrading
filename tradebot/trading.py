@@ -5,64 +5,49 @@ from datetime import datetime
 from printing_data import PrintPrices
 from strategy import *
 
-SEQ_LEN = 60
-path = "/Users/seonghyunpark/Documents/autotrading/rc_trading/crypto_data/Binance_BTCUSDT_minute.csv"
-new_df = pd.read_csv(path, names = ['time', 'date', 'symbol','open', 'high', 'low', 'close', 'volume_usd',  'volume_btc', 'dummy'], error_bad_lines=False, index_col=False, dtype='unicode')
-coin_type = "BTC"
-new_df = new_df[1:]
-new_df = new_df[["close", "time"]]
-new_df_close = new_df["close"].tolist()[1:]
-new_df_close.reverse()
-new_df_close = [float(i) for i in new_df_close]
-new_df_time = new_df["time"].tolist()[1:]
-new_df_time.reverse()
-new_df_time = [int(i)/1000 for i in new_df_time]
+from binance.client import Client
+from datetime import datetime
+import config
+import talib, numpy
+import time
 
-def last_half(l):
-    return l[int (len(l)/2):]
-
-def first_half(l):
-    return l[:(int (len(l)/2))]
-
-def backtesting(close_value, close_time, budget):
-
-    close_value = last_half(close_value)
-    close_time = last_half(close_time)
+client = Client(config.apiKey, config.apiSecurity)
+symbol = 'ETHUSDT'
+account = client.futures_account()
+client.futures_change_leverage(symbol=symbol, leverage=2)
+def backtesting(budget):    
+    kline = client.futures_klines(symbol=symbol, limit= 1000,interval=client.KLINE_INTERVAL_1MINUTE)
+    closed_price = []
+    closed_time = []
+    for i in kline:
+        closed_price.append(float(i[4]))
+        closed_time.append(int(i[0])/1000)
+    closed_price = deque((closed_price))
+    strat = RCstrategy(closed_price, budget, 1)
+    print_history = PrintPrices(budget, closed_price[-1], closed_time[-1])
     
-    #rsi calculation
-    START_TIME = 100
-    MINUTE = 5
-    valueQ = deque(close_value[:START_TIME:MINUTE])
-    rsi = RSI(14, 70, 30)
-    rsi.rsi(valueQ)
-    trade_count = 0
-    #move list by the start time
-    close_time = close_time[START_TIME:]
-    close_value = close_value[START_TIME:]
-    track_history = PrintPrices(budget, close_value[0], close_time[0])
-    
-    # looping 
-    #change
-    strat = RCstrategy(valueQ,rsi, budget, 2)
-    
-    for i in range(0, len(close_value)):
+    recent_trade_time = ""
+    while True:
+        kline = client.futures_klines(symbol=symbol, limit= 1000,interval=client.KLINE_INTERVAL_1MINUTE)
+        closed_price = []
+        closed_time = []
+        for i in kline:
+            closed_price.append(float(i[4]))
+            closed_time.append(int(i[0])/1000)
         
-        price = close_value[i]
-        
-        traded = strat.trade(price)
-        #daily profit counter
-        
+        price = closed_price[-1]
+        if recent_trade_time != closed_time[-1]:
+            traded = strat.trade(price)
+
         if traded:
-            track_history.trade_count += 1
-            track_history.printCurrent(price, strat.coin, strat.deposit, close_time[i], strat.lastPrice)
+            recent_trade_time = closed_time[-1]
+            print_history.trade_count += 1
+            print_history.printCurrent(price, strat.coin, strat.deposit, closed_time[-1], strat.lastPrice, strat.trade_status)
+            time.sleep(30)
 
-
-    track_history.result(strat)
-    print(datetime.fromtimestamp(close_time[0]))
-    print(datetime.fromtimestamp(close_time[-1]))
-    print(close_value[0])
-    print(close_value[len(close_value)-1])
+        time.sleep(1)
     return 0
 
+backtesting(1000)
 
-backtesting(new_df_close, new_df_time, 1000)
+

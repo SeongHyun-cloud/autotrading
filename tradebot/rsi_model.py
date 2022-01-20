@@ -28,9 +28,9 @@ class RSI:
     def rsi(self, closed_prices):
         if len(closed_prices) > self.RSI_PERIOD:
             np_closes = numpy.array(closed_prices)
-            rsi = talib.RSI(np_closes, self.RSI_PERIOD)
+            rsi = talib.RSI(np_closes, timeperiod=self.RSI_PERIOD)
             self.last_rsi = rsi[-1]
-            
+            #print(self.last_rsi, len(closed_prices), closed_prices[-1])
             if self.last_rsi > self.RSI_95:
                 return "OVERBOUGHT", 0.8
             elif self.last_rsi > self.RSI_90:
@@ -44,14 +44,16 @@ class RSI:
             elif self.last_rsi > self.RSI_40:
                 return "NONE", 0.0
             elif self.last_rsi > self.RSI_30:
-                return "OVERSOLD", 0.2
+                return "OVERSOLD", 0.1
             elif self.last_rsi > self.RSI_20:
-                return "OVERSOLD", 0.5
+                return "OVERSOLD", 0.4
             elif self.last_rsi > self.RSI_10:
                 return "OVERSOLD", 0.7
             elif self.last_rsi > self.RSI_5:
+                #print("buyyyy")
                 return "OVERSOLD", 0.8
             elif self.last_rsi >= 0:
-                return "OVERSOLD", 1
+                #input(closed_prices)
+                return "OVERSOLD", 0.8
 
 
