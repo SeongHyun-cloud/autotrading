@@ -1,4 +1,4 @@
-import websocket, json, pprint, talib, numpy
+import json, pprint, talib, numpy
 
 class RSI:
     RSI_PERIOD = 14
